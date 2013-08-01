@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 # Author: Thura Hlaing <trhura@gmail.com>
-# Time-stamp: <2013-08-01 21:10:24 (trhura)>
+# Time-stamp: <2013-08-01 21:59:56 (trhura)>
 
 import unittest
+import string
 from chance import Chance
 
 class ChanceTest (unittest.TestCase):
@@ -28,6 +29,10 @@ class ChanceTest (unittest.TestCase):
         bools = [Chance.bool (likely=100) for i in range(25)]
         self.assertNotIn (False, bools,
                           "There should not be a False")
+
+    def test_character_is_in_pool (self):
+        chars = [Chance.character (pool=string.digits) for x in range(50)]
+        map (lambda c: self.assertIn (c, string.digits), chars)
 
 if __name__ == "__main__":
     unittest.main ()
