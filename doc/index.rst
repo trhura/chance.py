@@ -14,7 +14,6 @@ Contents:
    chance
 
 
-
 Indices and tables
 ==================
 
