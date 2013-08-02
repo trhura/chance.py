@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # Author: Thura Hlaing <trhura@gmail.com>
-# Time-stamp: <2013-08-02 08:43:03 (trhura)>
+# Time-stamp: <2013-08-02 20:37:54 (trhura)>
 
 import random
 import string
+import linecache
 import sys
 
 def bool (likely=50):
@@ -49,6 +50,8 @@ def integer (min=-sys.maxint-1, max=sys.maxint):
 
     :param min: integer to be used as minimum
     :param max: integer to be used as maximum
+    >>> map (lambda x: 15 <= x <=20, [integer(min=15,max=17) for x in range(25)]) #doctest: +ELLIPSIS
+    [True, ..., True, True]
     """
     assert min.__class__ == int, "Min must be a number"
     assert max.__class__ == int, "Max must be a number"
@@ -64,27 +67,30 @@ def number (around=100, plus_or_minus=25):
 
     :param around: integer to be used as base number
     :param plus_or_minus: integer
+    >>> [number(around=25,plus_or_minus=10) for x in range(10)] #doctest: +SKIP
+    [35, 27, 15, 17, 16, 25, 29, 31, 20, 30]
+
     """
     assert around.__class__ == int, "Min must be a number"
     assert plus_or_minus.__class__ == int, "Max must be a number"
 
     return random.randint (around-plus_or_minus, around+plus_or_minus)
 
-def float (length=5):
+def double (length=5):
     """
     Return a random float x between 0.0 <= x < 1.0. If length is specified,
     there will be `length` digits after decimal point.
 
     :param length: number of digits to follow after decimal point
 
+    >>> [(16.8 + double (length=4) * 0.1, 96.1 + double (length=4)* 0.1)] #doctest: +SKIP
+    [(16.8..., 96.1...)] # a random coordinate around Yangon (16.8, 96.1)
     """
     assert length.__class__ == int, "Length must be an integer"
     assert 0 < length < 10, "Should be 0 < length < 10"
 
-    tenpowlen = pow(10, length)
     randfloat = random.random ()
-
-    return randfloat - (randfloat / tenpowlen)
+    return float(str(randfloat)[:length + 2]) # FIXME:
 
 def string (length=5, pool=string.ascii_letters, skip=''):
     """
@@ -100,6 +106,38 @@ def string (length=5, pool=string.ascii_letters, skip=''):
     'eeeeee'
     """
     return "".join (character(pool=pool,skip=skip) for x in range(length))
+
+def word (regexp=""):
+    """
+    Return a random word matchin `regexp` expression from `/etc/dictionaries-common/words`.
+    Currently it works only on Linux.
+
+    :param regexp: ignored, currently not implemented yet
+    """
+    if not hasattr (word, 'lines'):
+        with open ("/etc/dictionaries-common/words") as dictFile:
+            word.lines = len (list(dictFile))
+
+    return linecache.getline ("/etc/dictionaries-common/words",
+                              random.randint (1, word.lines)).strip ()
+
+def sentence (words=random.randint(5,12)):
+    """
+    Return a random sentence containing `n` words. Currently it
+    works only on Linux.
+
+    :param words: number of words in sentence
+    """
+    return " ".join ([word() for i in range(words)]).capitalize () + '.'
+
+def paragraph (sentences=random.randint(5,12)):
+    """
+    Return a random paragraph containing `n` sentences. Currently it
+    works only on Linux.
+
+    :param sentences: number of sentences in paragraph
+    """
+    return " ".join ([sentence() for i in range(sentences)])
 
 if __name__ == "__main__":
     import doctest
