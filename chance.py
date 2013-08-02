@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author: Thura Hlaing <trhura@gmail.com>
-# Time-stamp: <2013-08-01 23:26:45 (trhura)>
+# Time-stamp: <2013-08-02 08:43:03 (trhura)>
 
 import random
 import string
@@ -85,6 +85,21 @@ def float (length=5):
     randfloat = random.random ()
 
     return randfloat - (randfloat / tenpowlen)
+
+def string (length=5, pool=string.ascii_letters, skip=''):
+    """
+    Return a random string of length containing characters from pool.
+    If not specified, `string.ascii_letters` will be used as pool.
+    If *skip* is given, characters in *skip* will be ignored.
+
+    :param length: length of string
+    :param  pool: a string or list of characters
+    :param  skip: a string or list of blacklisted characters
+
+    >>> string (length=6, pool='abcde', skip='abcd')
+    'eeeeee'
+    """
+    return "".join (character(pool=pool,skip=skip) for x in range(length))
 
 if __name__ == "__main__":
     import doctest
